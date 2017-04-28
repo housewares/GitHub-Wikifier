@@ -104,7 +104,7 @@ function wikify() {
     if [[ ! -s $file ]]; then
       flag=" ⚑"
     fi
-    echo "${space}0. [[$name|$identifier]]$flag"
+    echo "${space}1. [[$name|$identifier]]$flag"
   }
 
   function id_to_string() {
