@@ -95,6 +95,7 @@ function wikify() {
     if [[ "$(file -ib $1)" =~ "directory" ]]; then
       1="$1.md"
     fi
+    url=$(echo "$1" | sed -e "s|$subjects|$wiki_url|")
     identifier=$(echo "$1" | sed -e 's/.*\/\([^\/]*\).md$/\1/')
     name=$(echo "$identifier" | sed -e 's/^[0-9\.]*\-//' | sed -e 's/\-/ /g')
   }
@@ -104,7 +105,7 @@ function wikify() {
     if [[ ! -s $file ]]; then
       flag=" ⚑"
     fi
-    echo "${space}1. [[$name|$identifier]]$flag"
+    echo "${space}1. [$name]($url)$flag"
   }
 
   function id_to_string() {
@@ -113,7 +114,7 @@ function wikify() {
 
   function subject_to_header() {
     string_to_name_and_id $1
-    echo "\n${space}### [[☰|$identifier]] $(id_to_string $identifier)"
+    echo "\n${space}### [☰]($identifier) $(id_to_string $identifier)"
   }
 
   function recursive_write() {
@@ -175,6 +176,7 @@ function wikify() {
   initial_depth=0
   initial_depth=$(directory_depth $subjects)
   reverse_pointer_depth=0
+  wiki_url=$(git remote get-url bitbucket | sed -r -e 's/(http[s]:\/\/[^\/]+|git@.+:)([^\.]+).*/\2\/wiki/g')
   rm -f /tmp/wikify.txt; touch /tmp/wikify.txt
 
   # Empty Home.md
@@ -203,4 +205,3 @@ function wikify() {
 }
 
 wikify .
-
